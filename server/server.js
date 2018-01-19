@@ -19,13 +19,11 @@ io.on('connection',(socket)=>{
   socket.broadcast.emit('newMessage',generateMessage('Admin','New User Joint'))
 
 
-  socket.on('createMessage',(message)=>{ // event when i get message
-      io.emit('newMessage',{ // broad cast the message
-        from:message.from,
-        text:message.text,
-        createdAt:new Date().getTime()
-      })
+  socket.on('createMessage',(message,callback)=>{ // event when i get message
+    callback("this is from server")
+      io.emit('newMessage',generateMessage(message.from,message.text))
   })
+
   socket.on('disconnect',()=>{
     console.log('a user left')
   })

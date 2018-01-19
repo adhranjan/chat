@@ -15,3 +15,10 @@ socket.on('disconnect',function(){
 socket.on('newMessage',function(email){
   console.log("we have new email",email)
 })
+
+socket.emit('createMessage',{
+  from:"ranjan",
+  text:"fuck"
+},function(acknolowdgement){
+  console.log(acknolowdgement)
+})
