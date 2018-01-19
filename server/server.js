@@ -11,17 +11,14 @@ var io = socketIO(server)
 
 
 io.on('connection',(socket)=>{
-  console.log("new user")
-  socket.on('newMessage',(newEmail)=>{
-    console.log(newEmail)
+  // console.log("new user")
+  socket.on('createMessage',(message)=>{ // event when i get message
+      io.emit('newMessage',{ // broad cast the message
+        from:message.from,
+        text:message.text,
+        createdAt:new Date().getTime()
+      })
   })
-
-  socket.emit('newMessage',{
-    'from':'adh.ranjan@gmail.com',
-    'text':'Hello world',
-    'createdAt':122
-  })
-
   socket.on('disconnect',()=>{
     console.log('a user left')
   })
