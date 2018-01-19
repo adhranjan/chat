@@ -12,6 +12,15 @@ var io = socketIO(server)
 
 io.on('connection',(socket)=>{
   console.log("new user")
+  socket.on('newMessage',(newEmail)=>{
+    console.log(newEmail)
+  })
+
+  socket.emit('newMessage',{
+    'from':'adh.ranjan@gmail.com',
+    'text':'Hello world',
+    'createdAt':122
+  })
 
   socket.on('disconnect',()=>{
     console.log('a user left')
@@ -19,9 +28,7 @@ io.on('connection',(socket)=>{
 })
 
 
-
 app.use(express.static(publicPath))
-
 
 server.listen(port,()=>{
   console.log(`Listening at port ${port}`)
