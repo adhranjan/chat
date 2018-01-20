@@ -4,7 +4,7 @@ const express = require('express')
 const socketIO = require('socket.io')
 
 
-const {generateMessage} = require('./util/message')
+const {generateMessage,generateLocationMessage} = require('./util/message')
 const publicPath = path.join(__dirname,'../public')
 const port = process.env.PORT || 3000
 var app = express()
@@ -13,11 +13,13 @@ var io = socketIO(server)
 
 
 io.on('connection',(socket)=>{
-  // console.log("new user")
-
   socket.emit('newMessage',generateMessage('Admin','Welcome to chat'))
   socket.broadcast.emit('newMessage',generateMessage('Admin','New User Joint'))
 
+  socket.on('locationShared',(location)=>{
+    socket.broadcast.emit('newLocationMessage',generateLocationMessage('User',location.latitude,location.longitude))
+
+  })
 
   socket.on('createMessage',(message,callback)=>{ // event when i get message
       io.emit('newMessage',generateMessage(message.from,message.text))
