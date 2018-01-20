@@ -20,8 +20,8 @@ io.on('connection',(socket)=>{
 
 
   socket.on('createMessage',(message,callback)=>{ // event when i get message
-    callback("this is from server")
       io.emit('newMessage',generateMessage(message.from,message.text))
+      callback("this is from server")
   })
 
   socket.on('disconnect',()=>{
