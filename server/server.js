@@ -18,16 +18,15 @@ io.on('connection',(socket)=>{
 
   socket.on('locationShared',(location)=>{
     socket.broadcast.emit('newLocationMessage',generateLocationMessage('User',location.latitude,location.longitude))
-
   })
 
   socket.on('createMessage',(message,callback)=>{ // event when i get message
       io.emit('newMessage',generateMessage(message.from,message.text))
-      callback("this is from server")
+      // callback("this is from server")
   })
 
   socket.on('disconnect',()=>{
-    console.log('a user left')
+    socket.broadcast.emit('newMessage',generateMessage('Admin','A User left the conversation'))
   })
 })
 
