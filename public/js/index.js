@@ -1,9 +1,50 @@
+function newMessageScroll(){
+  //Selectors
+  var messages = jQuery('#messages');
+  var scrollHeight = messages.  prop('scrollHeight')
+  messages.scrollTop(scrollHeight)
+}
+
+
+function scrollToBottm(){
+  //Selectors
+  var messages = jQuery('#messages');
+  var newMessage = messages.children('li:last');
+  //Heights
+  var clientHeight = messages.prop('clientHeight')
+  var scrollTop = messages.prop('scrollTop')
+  var scrollHeight = messages.  prop('scrollHeight')
+  var newMessageHeight = newMessage.innerHeight()
+  var lastMessageHeight = newMessage.prev().innerHeight()
+
+  if(clientHeight + scrollTop + newMessageHeight + lastMessageHeight >= scrollHeight){
+    messages.scrollTop(scrollHeight)
+  //  messages.scrollTop(scrollHeight)
+  }else{
+    var new_message_alert_location = jQuery('#new_message_alert_location');
+    new_message_alert_location.removeAttr('style')
+    var template = jQuery('#alert-message-template').html()
+    var html = Mustache.render(template)
+    if(new_message_alert_location.children().length === 0){
+      new_message_alert_location.append(html)
+    }
+    new_message_alert_location.fadeOut(5000, function(){
+      $(this).children().remove()
+    });
+    }
+}
+
 jQuery('#message-form').on('submit',function(event){
   textField = jQuery('[name=message]');
   event.preventDefault()
+  textValue = textField.val().trim()
+  textValue1 = textField.val()
+  if(textValue.length === 0){
+    return false
+  }
   socket.emit('createMessage',{
     from:"User",
-    text:textField.val()
+    text:textValue
   },function(acknolowdgement){
     console.log(acknolowdgement)
   })
@@ -32,6 +73,7 @@ socket.on('newMessage',function(message){
       text:message.text
     })
     jQuery('#messages').append(html)
+    scrollToBottm()
 })
 
 socket.on('newLocationMessage',function(message){
@@ -42,6 +84,7 @@ socket.on('newLocationMessage',function(message){
     url:message.url
   })
   jQuery('#messages').append(html)
+  scrollToBottm()
 })
 
 
