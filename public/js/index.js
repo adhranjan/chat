@@ -23,14 +23,16 @@ socket.on('disconnect',function(){
 })
 
 socket.on('newMessage',function(message){
+    var formattedDate = moment(message.createdAt).format('h:mm a');
     var li = jQuery('<li></li>')
-    li.text(`${message.from}:${message.text}`);
+    li.text(`${message.from} ${formattedDate}: ${message.text}`);
     jQuery('#messages').append(li)
 })
 
 socket.on('newLocationMessage',function(message){
+  var formattedDate = moment(message.createdAt).format('h:mm a');
   var li = jQuery('<li></li>')
-  var a = jQuery('<a target ="_blank"> My Location </a>')
+  var a = jQuery(`<a target ="_blank"> My Location ${formattedDate}</a>`)
 
   li.text(message.fromx);
   a.attr('href',message.url)
@@ -46,7 +48,6 @@ locator.on('click',function(){
   if(!navigator.geolocation){
     return alert('Your browser doesnot support Location')
   }
-
   navigator.geolocation.getCurrentPosition(function(position){
     socket.emit('locationShared',{
       latitude:position.coords.latitude,
@@ -55,5 +56,4 @@ locator.on('click',function(){
   },function(){
     alert('Unable to fecth')
   })
-
 })
