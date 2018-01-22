@@ -6,7 +6,7 @@ function newMessageScroll(){
 }
 
 
-function scrollToBottm(){
+function scrollToBottom(){
   //Selectors
   var messages = jQuery('#messages');
   var newMessage = messages.children('li:last');
@@ -73,7 +73,7 @@ socket.on('newMessage',function(message){
       text:message.text
     })
     jQuery('#messages').append(html)
-    scrollToBottm()
+    scrollToBottom()
 })
 
 socket.on('newLocationMessage',function(message){
@@ -84,7 +84,7 @@ socket.on('newLocationMessage',function(message){
     url:message.url
   })
   jQuery('#messages').append(html)
-  scrollToBottm()
+  scrollToBottom()
 })
 
 

@@ -6,7 +6,7 @@ const socketIO = require('socket.io')
 
 const {generateMessage,generateLocationMessage} = require('./util/message')
 const publicPath = path.join(__dirname,'../public')
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 3000 
 var app = express()
 var server = http.createServer(app)
 var io = socketIO(server)
@@ -17,7 +17,7 @@ io.on('connection',(socket)=>{
   socket.broadcast.emit('newMessage',generateMessage('Admin','New User Joint'))
 
   socket.on('locationShared',(location)=>{
-    socket.broadcast.emit('newLocationMessage',generateLocationMessage('User',location.latitude,location.longitude))
+    io.emit('newLocationMessage',generateLocationMessage('User',location.latitude,location.longitude))
   })
 
   socket.on('createMessage',(message,callback)=>{ // event when i get message
