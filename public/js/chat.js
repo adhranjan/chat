@@ -1,3 +1,15 @@
+function getMessageId(){
+  var id = "";
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+  for (var i = 0; i < 32; i++)
+    id += possible.charAt(Math.floor(Math.random() * possible.length));
+  return id
+}
+
+var messageId = getMessageId()
+
+
 function newMessageScroll(){
   //Selectors
   var messages = jQuery('#messages');
@@ -36,6 +48,7 @@ function scrollToBottom(){
 
 jQuery('#message-form').on('submit',function(event){
   textField = jQuery('[name=message]');
+  console.log(messageId)
   event.preventDefault()
   textValue = textField.val().trim()
   textValue1 = textField.val()
@@ -44,12 +57,26 @@ jQuery('#message-form').on('submit',function(event){
   }
   socket.emit('createMessage',{
     from:"User",
-    text:textValue
+    text:textValue,
+    messageId
   },function(acknolowdgement){
-    // console.log(acknolowdgement)
+      messageId = getMessageId()
   })
   textField.val('')
 })
+
+
+jQuery('[name=message]').on('input', function() {
+    var text = $(this).val()
+    socket.emit('creatingMessage',{
+      text:text,
+      messageId:messageId
+    },function(acknolowdgement){
+      // console.log(acknolowdgement)
+    })
+    // get the current value of the input field.
+});
+
 
 var socket = io();
 socket.on('connect',function(){
@@ -70,9 +97,11 @@ socket.on('disconnect',function(){
 })
 
 socket.on('newMessage',function(message){
+  jQuery('#'+message.messageId).remove();
     var template = jQuery('#message-template').html()
     var html = Mustache.render(template,{
       from:message.from,
+      id:message.messageId,
       createdAt:moment(message.createdAt).format('h:mm a'),
       text:message.text
     })
@@ -84,6 +113,7 @@ socket.on('newLocationMessage',function(message){
   var template = jQuery('#location-message-template').html()
   var html = Mustache.render(template,{
     from:message.from,
+    id:message.messageId,
     createdAt:moment(message.createdAt).format('h:mm a'),
     url:message.url
   })
@@ -100,16 +130,35 @@ socket.on('updateUserList',function(users){
   jQuery('#users').append(ol)
 })
 
+socket.on('newMessageTyping',function(typingMessage){
+  var template = jQuery('#message-template').html()
+  jQuery('#'+typingMessage.messageId).remove();
+  if(typingMessage.text.trim().length>0){
+    var html = Mustache.render(template,{
+      from:typingMessage.from,
+      id:typingMessage.messageId,
+      createdAt:moment(typingMessage.createdAt).format('h:mm a'),
+      text:typingMessage.text
+    })
+  }
+  jQuery('#messages').append(html)
+
+})
+
+
 
 var locator = jQuery('#locator');
-locator.on('click',function(){
+locator.on('click',function(){ //id attached
   if(!navigator.geolocation){
     return alert('Your browser doesnot support Location')
   }
   navigator.geolocation.getCurrentPosition(function(position){
     socket.emit('locationShared',{
       latitude:position.coords.latitude,
-      longitude:position.coords.longitude
+      longitude:position.coords.longitude,
+      messageId:messageId
+    },function(ack){
+      messageId = getMessageId()
     })
   },function(){
     alert('Unable to fecth')
