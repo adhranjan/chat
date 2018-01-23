@@ -61,6 +61,7 @@ io.on('connection',(socket)=>{
     var user = users.getUser(socket.id)
       if(user){
           var typingObject = generateMessage(user.name,message.text,message.messageId);
+          typingObject.text = typingObject.text
           socket.broadcast.to(user.room).emit('newMessageTyping',typingObject)
       }
     // console.log(user)

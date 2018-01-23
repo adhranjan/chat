@@ -27,7 +27,7 @@
       </div>
 
       <script id="message-template" type="text/template">
-        <li class="message" id='{{id}}'>
+        <li class="message {{#typing}}message__typing{{/typing}}" id='{{id}}'>
             <div class="message__title">
                 <h4>
                     {{from}}

@@ -137,12 +137,13 @@ socket.on('newMessageTyping',function(typingMessage){
     var html = Mustache.render(template,{
       from:typingMessage.from,
       id:typingMessage.messageId,
+      typing:true,
       createdAt:moment(typingMessage.createdAt).format('h:mm a'),
-      text:typingMessage.text
+      text:typingMessage.text+'....'
     })
   }
   jQuery('#messages').append(html)
-
+  scrollToBottom()
 })
 
 
