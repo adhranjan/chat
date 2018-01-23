@@ -46,22 +46,26 @@ jQuery('#message-form').on('submit',function(event){
     from:"User",
     text:textValue
   },function(acknolowdgement){
-    console.log(acknolowdgement)
+    // console.log(acknolowdgement)
   })
   textField.val('')
 })
 
 var socket = io();
 socket.on('connect',function(){
-  console.log("connected")
-//   socket.emit('newMessage',{
-//     'from':'adh.ranjan@gmail.com',
-//     'text':'hello word',
-//     'createdAt':new Date()
-//   })
+  var params = jQuery.deparam(window.location.search)
+  socket.emit('join',params,function(err){
+    if(err){
+        alert(err)
+        window.location.href = '/'
+    }else{
+        console.log("no Error")
+    }
+  })
 })
 
 socket.on('disconnect',function(){
+  alert('Lost the internet. Trying to reconnect...')
   console.log("Disconnected from server")
 })
 
@@ -87,6 +91,14 @@ socket.on('newLocationMessage',function(message){
   scrollToBottom()
 })
 
+socket.on('updateUserList',function(users){
+  jQuery('#users').html('')
+  var ol = jQuery('<ol></ol>')
+  users.forEach(function(user){
+    ol.append(jQuery('<li></li>').text(user))
+  })
+  jQuery('#users').append(ol)
+})
 
 
 var locator = jQuery('#locator');
