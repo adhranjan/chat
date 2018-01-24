@@ -30,4 +30,29 @@ class Users{
   }
 }
 
-module.exports = {Users}
+
+class Rooms{
+  constructor(){
+    this.rooms = [];
+  }
+
+  addRoom(name){
+    if(!this.rooms.includes(name)){
+      this.rooms.push(name)
+    }
+  }
+
+  removeRoom(users,name){
+    if(users.filter((user)=> user.room === name).length === 0){
+          this.rooms = this.rooms.filter((room) => room !==name)
+      }
+  }
+
+  getAllActiveRoom(){
+    return this.rooms
+  }
+
+
+}
+
+module.exports = {Users,Rooms}

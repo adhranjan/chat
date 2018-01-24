@@ -9,3 +9,6 @@ button,button:hover{border:none;color:#fff;padding:10px}.chat__messages,.chat__s
 #user__left{
   background: #ffcece; !important
 }
+.select2{
+  width:100% !important
+}

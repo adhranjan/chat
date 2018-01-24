@@ -6,7 +6,7 @@ const socketIO = require('socket.io')
 
 const {generateMessage,generateLocationMessage} = require('./util/message')
 const {isRealString} = require('./util/validation')
-const {Users} = require('./util/users')
+const {Users,Rooms} = require('./util/users')
 
 const publicPath = path.join(__dirname,'../public')
 const port = process.env.PORT || 3000
@@ -14,7 +14,7 @@ var app = express()
 var server = http.createServer(app)
 var io = socketIO(server)
 var users = new Users()
-
+var rooms = new Rooms()
 
 io.on('connection',(socket)=>{
   socket.on('join',(params,callback)=>{
@@ -26,6 +26,7 @@ io.on('connection',(socket)=>{
       socket.join(params.room)
       users.removeUser(socket.id) // remove the previous room they are in
       users.addUser(socket.id, params.name, params.room) // add them in given room
+      rooms.addRoom(params.room)//add room to room list
       io.to(params.room).emit('updateUserList',users.getUserList(params.room))
 
       //io.emit('To every connected user') => for only in given join io.to('given room').emit
@@ -67,9 +68,14 @@ io.on('connection',(socket)=>{
     // console.log(user)
   })
 
+  socket.on('getActiveClass',(callback)=>{
+      callback(rooms.getAllActiveRoom())
+  })
+
   socket.on('disconnect',()=>{
     var user = users.removeUser(socket.id)
     if(user){
+      rooms.removeRoom(users.users,user.room)
       io.to(user.room).emit('updateUserList',users.getUserList(user.room))
       io.to(user.room).emit('newMessage',generateMessage('Admin',`${user.name} has left.`,'user__left'))
     }

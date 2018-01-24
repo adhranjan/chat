@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8">
     <title>Chat</title>
+    <link href="/css/select2.min.css" rel="stylesheet" />
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <link rel="stylesheet" href="/css/style.css">
   </head>
@@ -18,12 +19,38 @@
           </div>
           <div class="form-field">
             <label>Room Name</label>
-            <input type="text" required="required" name="room"/>
+            <select class="room_list" name="room">
+
+            </select>
+            <!-- <input type="text" required="required" name="room"/> -->
           </div>
           <div class="form-field">
               <button>Join</button>
           </div>
       </form>
       </div>
+      <script src="/socket.io/socket.io.js" type="text/javascript"></script>
+      <script src="/js/libs/jquery-3.2.1.min.js" type="text/javascript"></script>
+      <script src="/js/libs/select2.min.js"></script>
   </body>
 </html>
+
+<script type="text/javascript">
+  select = $('select');
+  var socket = io();
+    jQuery().ready(function(){
+      socket.emit('getActiveClass',function(activeRooms){
+        $.each(activeRooms, function(val, text) {
+            select.append( $('<option></option>').val(text).html(text) )
+        });
+        select.select2({
+          // selectOnClose: true,
+          tags: true
+        });
+
+      })
+
+
+
+    })
+</script>

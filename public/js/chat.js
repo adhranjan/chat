@@ -48,7 +48,7 @@ function scrollToBottom(){
 
 jQuery('#message-form').on('submit',function(event){
   textField = jQuery('[name=message]');
-  console.log(messageId)
+  // console.log(messageId)
   event.preventDefault()
   textValue = textField.val().trim()
   textValue1 = textField.val()
