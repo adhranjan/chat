@@ -9,7 +9,6 @@ var generateMessage = function(from, text,messageId){
 }
 
 var generateLocationMessage = function(from,latitide,longitude,messageId){
-  console.log(messageId)
   return{
     from,
     messageId,

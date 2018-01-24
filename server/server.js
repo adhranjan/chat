@@ -39,7 +39,7 @@ io.on('connection',(socket)=>{
   })
 
   socket.on('locationShared',(location,callback)=>{
-    console.log(location)
+    // console.log(location)
     var user = users.getUser(socket.id)
     if(user){
       io.to(user.room).emit('newLocationMessage',generateLocationMessage(user.name,location.latitude,location.longitude,location.messageId))

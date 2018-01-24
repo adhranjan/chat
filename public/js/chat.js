@@ -97,13 +97,15 @@ socket.on('disconnect',function(){
 })
 
 socket.on('newMessage',function(message){
-  jQuery('#'+message.messageId).remove();
+  if(jQuery('#'+message.messageId).hasClass('message__typing')){
+      jQuery('#'+message.messageId).remove()
+  }
     var template = jQuery('#message-template').html()
     var html = Mustache.render(template,{
-      from:message.from,
-      id:message.messageId,
-      createdAt:moment(message.createdAt).format('h:mm a'),
-      text:message.text
+        from:message.from,
+        id:message.messageId,
+        createdAt:moment(message.createdAt).format('h:mm a'),
+        text:message.text
     })
     jQuery('#messages').append(html)
     scrollToBottom()
@@ -112,10 +114,10 @@ socket.on('newMessage',function(message){
 socket.on('newLocationMessage',function(message){
   var template = jQuery('#location-message-template').html()
   var html = Mustache.render(template,{
-    from:message.from,
-    id:message.messageId,
-    createdAt:moment(message.createdAt).format('h:mm a'),
-    url:message.url
+      from:message.from,
+      id:message.messageId,
+      createdAt:moment(message.createdAt).format('h:mm a'),
+      url:message.url
   })
   jQuery('#messages').append(html)
   scrollToBottom()
@@ -157,9 +159,9 @@ locator.on('click',function(){ //id attached
     socket.emit('locationShared',{
       latitude:position.coords.latitude,
       longitude:position.coords.longitude,
-      messageId:messageId
+      messageId:getMessageId()
     },function(ack){
-      messageId = getMessageId()
+
     })
   },function(){
     alert('Unable to fecth')
